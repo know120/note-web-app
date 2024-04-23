@@ -1,12 +1,12 @@
 import './App.css';
 import Nav from './components/nav.js';
-import Note from './components/note.js'
+import NoteApp from './components/noteapp.js'
 
 function App() {
   return (
     <div className="App">
         <Nav />
-        <Note />
+        <NoteApp />
     </div>
   );
 }

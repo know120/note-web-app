@@ -4,7 +4,7 @@ import db from '../config/firebase.js';
 import Dashboard from "./dashboard.js";
 import NoteCard from "./noteCard.js";
 
-function Note(props) {
+function NoteApp(props) {
     const [notes, setNotes] = useState([]);
     const [isEdit, setIsEdit] = useState(false);
     const [noteId, setNoteId] = useState(null);
@@ -146,4 +146,4 @@ function Note(props) {
     );
 }
 
-export default Note;
+export default NoteApp;
