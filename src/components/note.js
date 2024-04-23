@@ -1,6 +1,7 @@
 import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from 'react';
 import db from '../config/firebase.js';
+import Dashboard from "./dashboard.js";
 
 function Note(props) {
     const [notes, setNotes] = useState([]);
@@ -13,7 +14,8 @@ function Note(props) {
     const colRef = collection(db, 'notes');
 
     useEffect(() => {
-        loadData()
+        loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // load notes
@@ -106,16 +108,9 @@ function Note(props) {
                     <br />
                     <button onClick={addNote}>{isEdit ? "Update Note" : "Add New Note"}</button>
                 </div>
-                <div className="area">
-                    <h3>Dashboard</h3>
-                    <ul>
-                        <li>Added: <span>{0}</span></li>
-                        <li>Edited: <span>{0}</span></li>
-                        <li>Deleted: <span>{0}</span></li>
-                    </ul>
-                </div>
+                <Dashboard />
             </div>
-            <div className={"note-area"}>
+            <div className="note-area">
                 {
                     notes.length > 0 ? notes.map((note, index) =>
                         <div className="area" key={note.id}>
