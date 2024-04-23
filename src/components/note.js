@@ -40,12 +40,14 @@ function Note(props) {
         );
     }
 
+    // render notes
     function renderNotes() {
         return notes.map((note, index) =>
             <NoteCard key={note.id} note={note} openDialog={openDialog} updateNote={updateNote} deleteNote={deleteNote} />
         )
     }
 
+    // render dialog
     function dialogComponent() {
         return (
             <dialog>
@@ -55,6 +57,7 @@ function Note(props) {
         );
     }
 
+    // render input area
     function inputArea() {
         return (
             <div className="area">
@@ -88,7 +91,6 @@ function Note(props) {
                     console.log(data.id);
                     setNotes([...notes, { id: data.id, note: note.value }]);
                     note.value = '';
-                    // setIsEdit(!isEdit);
                 })
                 .catch(err => console.log(err));
         }
