@@ -2,6 +2,7 @@ import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc } from "fire
 import React, { useEffect, useState } from 'react';
 import db from '../config/firebase.js';
 import Dashboard from "./dashboard.js";
+import NoteCard from "./noteCard.js";
 
 function Note(props) {
     const [notes, setNotes] = useState([]);
@@ -14,12 +15,12 @@ function Note(props) {
     const colRef = collection(db, 'notes');
 
     useEffect(() => {
-        loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        getNotes();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // load notes
-    async function loadData() {
+    async function getNotes() {
         const docSnap = await getDocs(query(colRef));
         const docs = []
         docSnap.forEach((doc) => {
@@ -28,8 +29,41 @@ function Note(props) {
                 note: doc.data().note
             });
         });
-        // return docs;
         setNotes(docs);
+    }
+
+    function noNote() {
+        return (
+            <div className="area no-notes">
+                <h3>Add some note to see here...</h3>
+            </div>
+        );
+    }
+
+    function renderNotes() {
+        return notes.map((note, index) =>
+            <NoteCard key={note.id} note={note} openDialog={openDialog} updateNote={updateNote} deleteNote={deleteNote} />
+        )
+    }
+
+    function dialogComponent() {
+        return (
+            <dialog>
+                <p>{noteDetail}</p>
+                <button onClick={closeDialog} autoFocus>close</button>
+            </dialog>
+        );
+    }
+
+    function inputArea() {
+        return (
+            <div className="area">
+                <h3 className="note-header">New</h3>
+                <textarea name="note" id="note" rows="5"></textarea>
+                <br />
+                <button onClick={addNote}>{isEdit ? "Update Note" : "Add New Note"}</button>
+            </div>
+        );
     }
 
     // add && edit note
@@ -61,13 +95,13 @@ function Note(props) {
     }
 
     // delete note 
-    function deleteNote(id) {
+    function deleteNote(note) {
         // confirm before deletion 
         if (window.confirm("Are You Sure !!!")) {
-            deleteDoc(doc(db, "notes", `${id}`))
+            deleteDoc(doc(db, "notes", `${note.id}`))
                 .then(data => {
                     console.log(data);
-                    setNotes(notes.filter(note => note.id !== id))
+                    setNotes(notes.filter(item => item.id !== note.id))
                 })
                 .catch(err => console.log(`some error occured: ${err.message}`));
         }
@@ -79,11 +113,6 @@ function Note(props) {
         note.value = doc.note;
         setIsEdit(!isEdit);
         setNoteId(doc.id)
-    }
-
-    // to string ellipse
-    function prepareNote(note) {
-        return note.length > 50 ? note.substring(0, 50) + "..." : note;
     }
 
     // open dialog
@@ -102,38 +131,14 @@ function Note(props) {
     return (
         <div className='app-view'>
             <div className="input-area">
-                <div className="area">
-                    <h3 className="note-header">New</h3>
-                    <textarea name="note" id="note" rows="5"></textarea>
-                    <br />
-                    <button onClick={addNote}>{isEdit ? "Update Note" : "Add New Note"}</button>
-                </div>
+                { inputArea() }
                 <Dashboard />
             </div>
             <div className="note-area">
-                {
-                    notes.length > 0 ? notes.map((note, index) =>
-                        <div className="area" key={note.id}>
-                            <p className="note">{prepareNote(note.note)}</p>
-                            <div className="action-buttons">
-                                <button onClick={() => openDialog(note)}>Details</button>
-                                <button onClick={() => updateNote(note)}>Edit</button>
-                                <button onClick={() => deleteNote(note.id)}>Delete</button>
-                            </div>
-                        </div>
-                    )
-                        :
-                        <div className="area no-notes">
-                            <h3>Add some note to see here...</h3>
-                        </div>
-                }
+                {notes.length > 0 ? renderNotes() : noNote()}
             </div>
-            {/* dialog for details view  */}
             <div>
-                <dialog>
-                    <p>{noteDetail}</p>
-                    <button onClick={closeDialog} autoFocus>close</button>
-                </dialog>
+                {dialogComponent()}
             </div>
         </div>
     );
