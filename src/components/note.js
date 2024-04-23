@@ -79,15 +79,18 @@ function Note(props) {
         setNoteId(doc.id)
     }
 
+    // to string ellipse
     function prepareNote(note) {
         return note.length > 50 ? note.substring(0, 50) + "..." : note;
     }
 
+    // open dialog
     function openDialog(note) {
         setNoteDetail(note.note);
         dialog.showModal();
     }
 
+    // close dialog
     function closeDialog() {
         setNoteId(null)
         dialog.close();
