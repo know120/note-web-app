@@ -1,38 +1,101 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
+* {
   background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  color: whitesmoke;
+}
+
+.App {
+  color: whitesmoke;
+  text-align: center;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.app-view {
+  display: flex;
+  flex-direction: row;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.area {
+  margin: 2rem;
+  padding: .5rem;
+  border: 1px solid aliceblue; 
+  border-radius: 1rem 2rem;
+  box-shadow: .75rem .5rem rgb(95, 129, 139);
+  transition: .1s;
+}
+
+.area:hover {
+  transform: scale(1.03);
+  transition: .1s;
+}
+
+.input-area {
+  width: 100%;
+  min-height: 100%;
+}
+
+.no-notes {
+  margin-top:15rem;
+}
+
+.note-area {
+  width: 100%;
+  height: 30rem;
+  overflow-y: scroll;
+}
+
+.note {
+  text-align: left;
+  border-radius: .5rem;
+  margin: .2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.action-buttons {
+  text-align: end;
+}
+
+button {
+  color: black;
+  padding: .35rem;
+  border-radius: .5rem;
+  background-color: aquamarine;
+  transition: .5s;
+}
+
+button:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+textarea{
+  min-width: 75%;
+}
+
+li{
+  text-align: left;
+  text-decoration: none;
+  color: aqua;
+}
+
+dialog {
+  max-width: 50%;
+  border-radius: 1rem 2rem;
+  box-shadow: .75rem .5rem rgb(95, 129, 139);
+  backdrop-filter: opacity(1%);
+}
+
+dialog
+
+dialog button {
+  background-color: brown;
+}
+
+::-webkit-scrollbar {
+  width: .25rem;
+  background-color: chocolate;
+  border-radius: .5rem;
 }
