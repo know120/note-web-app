@@ -88,8 +88,6 @@ dialog {
   backdrop-filter: opacity(1%);
 }
 
-dialog
-
 dialog button {
   background-color: brown;
 }
