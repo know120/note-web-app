@@ -9,20 +9,46 @@ function NoteApp(props) {
     const [isEdit, setIsEdit] = useState(false);
     const [noteId, setNoteId] = useState(null);
     const [noteDetail, setNoteDetail] = useState(null);
+    // for notes analytics
     const [total, setTotal] = useState(0);
+    const [add, setAdd] = useState(0);
+    const [edit, setEdit] = useState(0);
+    const [remove, setRemove] = useState(0);
     // for dialog element
     const dialog = document.querySelector("dialog");
     // for collection reference
     const colRef = collection(db, 'notes');
+    
     // listening to firestore
-    const subscribe = onSnapshot(colRef, (snap) => {
-        setTotal(snap.docs.length);
-    });
-    // print listener
-    // console.log(subscribe);
+    const subscribe = () => {
+        onSnapshot(colRef, (snap) => {
+            let added = 0;
+            let edited = 0;
+            let removed = 0;
+            snap.docChanges().forEach(change => {
+                // for added notes
+                if (change.type === "added") {
+                    added++;
+                }
+                // for edited notes
+                else if (change.type === "modified") {
+                    edited++;
+                }
+                // for deleted notes
+                else if (change.type === "removed") {
+                    removed++;
+                }
+            });
+            setTotal(snap.docs.length);
+            setAdd(added);
+            setEdit(edited);
+            setRemove(removed);
+        });
+    }
 
     useEffect(() => {
         getNotes();
+        subscribe();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -136,8 +162,8 @@ function NoteApp(props) {
     return (
         <div className='app-view'>
             <div className="input-area">
-                { inputArea() }
-                <Dashboard total={total}/>
+                {inputArea()}
+                <Dashboard total={total} added={add} edited={edit} deleted={remove}/>
             </div>
             <div className="note-area">
                 {notes.length > 0 ? renderNotes() : noNote()}
