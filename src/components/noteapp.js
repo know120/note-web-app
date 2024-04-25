@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from 'react';
 import db from '../config/firebase.js';
 import Dashboard from "./dashboard.js";
@@ -9,10 +9,17 @@ function NoteApp(props) {
     const [isEdit, setIsEdit] = useState(false);
     const [noteId, setNoteId] = useState(null);
     const [noteDetail, setNoteDetail] = useState(null);
+    const [total, setTotal] = useState(0);
     // for dialog element
     const dialog = document.querySelector("dialog");
     // for collection reference
     const colRef = collection(db, 'notes');
+    // listening to firestore
+    const subscribe = onSnapshot(colRef, (snap) => {
+        setTotal(snap.docs.length);
+    });
+    // print listener
+    // console.log(subscribe);
 
     useEffect(() => {
         getNotes();
@@ -75,10 +82,8 @@ function NoteApp(props) {
 
         if (isEdit) {
             // update note
-            console.log(isEdit)
             setDoc(doc(db, "notes", `${noteId}`), { note: note.value }, { merge: true })
                 .then(data => {
-                    console.log(data);
                     setNotes([{ id: noteId, note: note.value }, ...notes.filter(note => note.id !== noteId)]);
                     note.value = '';
                     setIsEdit(!isEdit);
@@ -88,7 +93,6 @@ function NoteApp(props) {
             // add note
             addDoc(colRef, { note: note.value })
                 .then(data => {
-                    console.log(data.id);
                     setNotes([...notes, { id: data.id, note: note.value }]);
                     note.value = '';
                 })
@@ -102,7 +106,6 @@ function NoteApp(props) {
         if (window.confirm("Are You Sure !!!")) {
             deleteDoc(doc(db, "notes", `${note.id}`))
                 .then(data => {
-                    console.log(data);
                     setNotes(notes.filter(item => item.id !== note.id))
                 })
                 .catch(err => console.log(`some error occured: ${err.message}`));
@@ -134,7 +137,7 @@ function NoteApp(props) {
         <div className='app-view'>
             <div className="input-area">
                 { inputArea() }
-                <Dashboard />
+                <Dashboard total={total}/>
             </div>
             <div className="note-area">
                 {notes.length > 0 ? renderNotes() : noNote()}
